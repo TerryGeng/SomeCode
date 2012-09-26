@@ -2,13 +2,14 @@
 #include<fstream>
 #include<vector>
 #include<string>
+#include<sstream>
 
 using namespace std;
 
 
 struct UnitConv {
-  string ConvF;
-  string ConvT;
+  string convF;
+  string convT;
   int ex;
 }
 
@@ -32,13 +33,18 @@ int main(){
 // @return val:The number of units which loaded.
 int load_units(string filename){
 
-  UnitConv temp;
+  fstream input;
+  istringstream line;
 
-  temp.ConvF = "m"; 
-  temp.ConvT = "m";
-  temp.ex = 0;
+  input.open(filename,fatream::in);
 
-  Units.push_back(temp);
+  for(istringstream line,Units temp;line.str(input.getline());){
+
+    line>>temp.convF>>temp.convT>>temp.ex;
+
+    Units.push_back(temp);
+
+  }
 
   return Units.size();
 
