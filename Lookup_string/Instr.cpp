@@ -1,7 +1,11 @@
+// Look up a string in some text. 
+//
+// Like the "instr" in Visual Basic.
+
 #include<cstdio>
 #include<cstring>
 
-int left(char*,char*);
+int instr(char*,char*);
 //--------------------
 
 int main(){
@@ -15,13 +19,20 @@ int main(){
 
   int position;
 
-  if((position = left(str,obj)) == -1) printf("Cannot find. \n");
+  if((position = instr(str,obj)) == -1) printf("Cannot find. \n");
   else printf("Found.The position of objective is %i. \n",position);
 
   return 0;
 }
 
-int left(char* str,char* obj){
+
+// Function: Look up a string in the text.
+//
+// @param char* str Original string.
+// @param char* obj Objective string(what you are looking for).
+// @return int The position of objective string first appeard. If couldn't find, return -1.
+
+int instr(char* str,char* obj){
  int lengthS,lengthO;
 
  lengthS = strlen(str);
