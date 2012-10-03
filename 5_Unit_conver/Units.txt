@@ -1,6 +1,6 @@
-m m 0
-km m 3
-dm m -1
-cm m -2
-um m -6
-nm m -9
+m m 1
+km m 1000
+dm m 0.1
+cm m 0.01
+um m 0.000001
+nm m 0.000000001
