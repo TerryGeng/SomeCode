@@ -53,9 +53,10 @@ int main(){
 }
 
 
-// Load units to "Units".
+// Function: Load units to "Units".
 // 
-// @return val:The number of units which loaded.
+// @param char* filename  The localtion of Units Table.
+// @return int  The number of units which loaded.
 int load_units(const char* filename){
   fstream input;
   istringstream line;
@@ -76,6 +77,13 @@ int load_units(const char* filename){
 
 }
 
+
+// Function: Conver units.
+//
+// @param string ori  The original unit.
+// @param string des  The objective unit.(destination)
+// @param value  The value part.(E.g. The value of "100m" is 100.)
+// @return double  The result.
 double units_conver(string ori,string des,double value){
   double conver_tag = get_conver_value(ori,des);
   if(conver_tag == -1) return 0;
@@ -83,6 +91,11 @@ double units_conver(string ori,string des,double value){
   return value * conver_tag;
 }
 
+// Function: Get corresponding unit tag from the Unit Table.
+//
+// @param string ori  The original unit.
+// @param string des  The objective unit.
+// @return double  The value which should times the original value.(E.g. 10m * 100 = 1000cm,In this case,the value is 100.)
 double get_conver_value(string ori,string des){
   for(int i=0;i<Units.size();i++){
    if(Units[i].ori == ori && Units[i].des == des) return Units[i].value; 
