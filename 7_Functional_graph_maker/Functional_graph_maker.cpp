@@ -27,6 +27,7 @@ struct RangeTag{
   double xRangeEnd;
   double yRangeStart;
   double yRangeEnd;
+  double steplen;
 };
 
 typedef struct CoordTag Coord;
@@ -40,11 +41,11 @@ typedef map<double,Column> CoordMap;
 //------------
 void printCoordMap(CoordMap&);
 
-vector<Coord> genCoordSet(Func*,Range range,double steplen=1);
+vector<Coord> genCoordSet(Func*,Range range);
 
-void CoordSetToCoordMap(vector<Coord>& coordSet,CoordMap& map,Range range,double unitlen=1);
+void CoordSetToCoordMap(vector<Coord>& coordSet,CoordMap& map,Range range);
 
-void getEmptyCoordMap(CoordMap& map,Range range,double unitlen=1);
+void getEmptyCoordMap(CoordMap& map,Range range,double unitlen);
 
 double unitePrecision(double value,double precision);
 
@@ -63,9 +64,10 @@ int main(){
   range.xRangeEnd=-6;
   range.yRangeStart=6;
   range.yRangeEnd=-6;
+  range.steplen=2;
 
-  coordSet = genCoordSet(f,range,1);
-  CoordSetToCoordMap(coordSet,map,range,2);
+  coordSet = genCoordSet(f,range);
+  CoordSetToCoordMap(coordSet,map,range);
   printCoordMap(map);
 
   return 0;
@@ -83,13 +85,13 @@ void printCoordMap(CoordMap& map){
   }
 }
 
-vector<Coord> genCoordSet(Func* f,Range range,double steplen){
+vector<Coord> genCoordSet(Func* f,Range range){
   vector<Coord> CoordSet;
   Coord temp;
 
   CoordSet.reserve(20);
 
-  for(double x=range.xRangeEnd;x<=range.xRangeStart;x+=steplen){
+  for(double x=range.xRangeEnd;x<=range.xRangeStart;x+=range.steplen){
     temp.x = x;
     temp.y = f(x);
 
@@ -101,20 +103,31 @@ vector<Coord> genCoordSet(Func* f,Range range,double steplen){
   return CoordSet;
 }
 
-void CoordSetToCoordMap(vector<Coord>& coordSet,CoordMap& map,Range range,double unitlen){
-  getEmptyCoordMap(map,range,unitlen);
+void CoordSetToCoordMap(vector<Coord>& coordSet,CoordMap& map,Range range){
+  getEmptyCoordMap(map,range,range.steplen);
+
+  double tempY = 0;
 
   for(int i=0;i<coordSet.size();i++){
-    map[unitePrecision(coordSet[i].y,unitlen)][coordSet[i].x] = 1;
+    tempY = unitePrecision(coordSet[i].y,range.steplen);
+
+    if(map.find(tempY) != map.end()){
+      map[tempY][coordSet[i].x] = 1;
+      cout<<coordSet[i].x<<" "<<tempY<<"\n";
+    }else{
+      cout<<"N "<<coordSet[i].x<<" "<<tempY<<" "<<"\n";
+    }
   }
 }
 
 void getEmptyCoordMap(CoordMap& map,Range range,double unitlen){
   Column temp;
   for(double x=range.xRangeEnd;x<=range.xRangeStart;x+=unitlen){
+    cout<<"x:"<<x<<"\n";
     temp[x] = 0;
   }
   for(double y=range.yRangeEnd;y<=range.yRangeStart;y+=unitlen){
+    cout<<"y:"<<y<<"\n";
     map[y] = temp;
   }
 
