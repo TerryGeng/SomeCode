@@ -65,12 +65,14 @@ int startGame(MSGame game){
 }
 
 void printMap(MSMap& map){
-  cout<<"  ";
+  cout<<"   ";
   for(int i=0;i<map.size();i++) cout<<i<<" ";
+  cout<<"\n   ";
+  for(int i=0;i<map.size();i++) cout<<"--";
   cout<<"\n";
 
   for(int i=0;i<map.size();i++){
-    cout<<i<<" ";
+    cout<<i<<"| ";
 
     for(int j=0;j<map[i].size();j++){
       printTag(map[i][j]);
@@ -102,7 +104,7 @@ void printTag(string tag){
 void generateMap(MSMap& map,MSGame game){
   generateEmptyMap(map,game);
   generateMines(map,game);
-//  generateNumbers(map);
+  generateNumbers(map);
 
 }
 
@@ -131,6 +133,7 @@ void generateMines(MSMap& map,MSGame game){
     if(!in_vector(minePosition,temp)){ 
       minePosition.push_back(temp);
       map[temp.y][temp.x] = "DX0";
+      //map[temp.y][temp.x] = "HX-";
     }
     else i--;
   }
@@ -145,8 +148,7 @@ void generateNumbers(MSMap& map){
       coord.y = i;
 
       if(map[i][j] == "HV-"){
-        mines = 1;
- //       mines = getMinesAround(map,coord);
+        mines = getMinesAround(map,coord);
         if(mines) { map[i][j] = "DN"; map[i][j] += mines+48;} 
       }
     }
@@ -165,12 +167,14 @@ int getMinesAround(MSMap& map ,Coord coord){
       temp.y = coord.y + i;
       temp.x = coord.x + j;
 
-      if(temp.x >= 0 && temp.y >= 0) around.push_back(temp);
+      if(temp.x >= 0 && temp.y >= 0 && temp.y < map.size() && temp.x < map[temp.y].size()) around.push_back(temp);
     }
   }
 
   for(int i=0;i<around.size();i++){
-    if(map[around[i].y][around[i].x] == "HX-") count++;
+    int x = around[i].x,y = around[i].y;
+//    if(map[y][x] == "HX-") count++;
+    if(map[y][x] == "DX0") count++;
   }
 
   return count;
