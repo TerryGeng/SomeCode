@@ -3,11 +3,13 @@
 #include<vector>
 #include<string>
 #include<ctime>
+#include<sstream>
 
 using std::cout;
 using std::cin;
 using std::vector;
 using std::string;
+using std::istringstream;
 
 typedef struct {
   int row;
@@ -36,6 +38,9 @@ void generateMines(MSMap&,MSGame);
 inline bool in_vector(vector<Coord>&,Coord);
 void generateNumbers(MSMap&);
 int getMinesAround(MSMap&,Coord);
+int executeInput(MSMap&,string,MSGame);
+int touchBlock(MSMap&,Coord);
+vector<Coord> getBlocksAround(MSMap&,Coord);
 
 //--------------------
 
@@ -60,8 +65,100 @@ int main(){
 int startGame(MSGame game){
   MSMap map;
 
+  cout<<"GameStart!\n";
+
   generateMap(map,game);
-  printMap(map);
+
+  while(1){
+    string input;
+
+    printMap(map);
+    cout<<"\nInput> ";
+    std::getline(cin,input);
+
+    int result = executeInput(map,input,game);
+    if(result == 1){
+      continue;
+    }
+    else if(result == 2){
+      cout<<"\n---Game over!---\n";
+      printMap(map);
+      break;
+    }else if(result == 3){
+      break;
+    }else if(result == 4){
+      cout<<"\nWrong input!\n";
+        continue;
+    }
+
+    cout<<"\n------------------------\n\n";
+  }
+}
+
+int executeInput(MSMap& map,string input,MSGame game){
+  istringstream sin(input);
+  string first;
+
+  if(sin>>first){
+    if(first == "q") return 3;
+    else if(first == "p"){
+      Coord coord;
+      int x=0,y=0;
+
+      if(!(sin>>x)) return 4;
+      if(!(sin>>y)) return 4;
+
+      cout<<x<<" "<<y<<"\n";
+      if(x >= game.col || y >= game.row) return 4;
+
+      coord.x = x;
+      coord.y = y;
+
+      int result = touchBlock(map,coord);
+
+      if(result == 1) return 1;
+      else if(result == 2) return 2;
+      else if(result == 0) return 4;
+    }else if(first == "m"){
+      Coord coord;
+
+      if(!(sin>>coord.x || sin>>coord.y) || (coord.x >= game.col || coord.y >= game.row)) return 4;
+      //if(markBlock(map,coord) == 1) return 1;
+    }
+  }
+
+  return 4;
+}
+
+int touchBlock(MSMap& map,Coord coord){
+  string &tag = map[coord.y][coord.x];
+  if(tag == "HV-"){
+    tag = "DV-";
+
+    vector<Coord> around;
+    around = getBlocksAround(map,coord);
+
+    for(int i=0;i<around.size();i++){
+      string &stag = map[around[i].y][around[i].x];
+      if(stag == "HV-") {
+        stag = "DV-";
+        touchBlock(map,around[i]);
+      }else if(stag.substr(0,2) == "HN") {
+        stag[0] = 'D';
+      }
+    }
+    return 1;
+  }else if(tag.substr(0,2) == "HN"){
+    tag[0] = 'D';
+    return 1;
+  }else if(tag == "HX-"){
+    tag = "DX1";
+    return 2;
+  }
+  return 0;
+}
+
+int markBlock(MSMap& map,Coord coord){
 }
 
 void printMap(MSMap& map){
@@ -96,7 +193,7 @@ void printTag(string tag){
       return;
     }
   }else{
-    cout<<"X ";
+    cout<<"X "<<tag;
   }
   return;
 }
@@ -132,8 +229,8 @@ void generateMines(MSMap& map,MSGame game){
 
     if(!in_vector(minePosition,temp)){ 
       minePosition.push_back(temp);
-      map[temp.y][temp.x] = "DX0";
-      //map[temp.y][temp.x] = "HX-";
+      //map[temp.y][temp.x] = "DX0";
+      map[temp.y][temp.x] = "HX-";
     }
     else i--;
   }
@@ -149,7 +246,8 @@ void generateNumbers(MSMap& map){
 
       if(map[i][j] == "HV-"){
         mines = getMinesAround(map,coord);
-        if(mines) { map[i][j] = "DN"; map[i][j] += mines+48;} 
+        //if(mines) { map[i][j] = "DN"; map[i][j] += mines+48;} 
+        if(mines) { map[i][j] = "HN"; map[i][j] += mines+48;} 
       }
     }
   }
@@ -159,6 +257,19 @@ int getMinesAround(MSMap& map ,Coord coord){
   vector<Coord> around;
   int count=0;
 
+  around = getBlocksAround(map,coord);
+
+  for(int i=0;i<around.size();i++){
+    int x = around[i].x,y = around[i].y;
+    if(map[y][x] == "HX-") count++;
+    //if(map[y][x] == "DX0") count++;
+  }
+
+  return count;
+}
+
+vector<Coord> getBlocksAround(MSMap& map,Coord coord){
+  vector<Coord> around;
   for(int i=-1;i<=1;i++){
     for(int j=-1;j<=1;j++) {
       if(!i && !j) continue;
@@ -171,13 +282,7 @@ int getMinesAround(MSMap& map ,Coord coord){
     }
   }
 
-  for(int i=0;i<around.size();i++){
-    int x = around[i].x,y = around[i].y;
-//    if(map[y][x] == "HX-") count++;
-    if(map[y][x] == "DX0") count++;
-  }
-
-  return count;
+  return around;
 }
 
 bool in_vector(vector<Coord>& my_vector,Coord element){
