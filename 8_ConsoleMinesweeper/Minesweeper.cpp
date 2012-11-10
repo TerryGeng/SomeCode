@@ -2,6 +2,7 @@
 #include<cstdlib>
 #include<vector>
 #include<string>
+#include<ctime>
 
 using std::cout;
 using std::cin;
@@ -40,6 +41,8 @@ int getMinesAround(MSMap&,Coord);
 
 int main(){
   MSGame game;
+
+  srand(time(NULL));
 
   cout<<"Welcome to Minesweeper!\n\n"
     <<"Set map width:\n";
@@ -96,13 +99,10 @@ void printTag(string tag){
   return;
 }
 
-void resetOutput(int lines){
-}
-
 void generateMap(MSMap& map,MSGame game){
   generateEmptyMap(map,game);
   generateMines(map,game);
-  generateNumbers(map);
+//  generateNumbers(map);
 
 }
 
@@ -130,7 +130,7 @@ void generateMines(MSMap& map,MSGame game){
 
     if(!in_vector(minePosition,temp)){ 
       minePosition.push_back(temp);
-      map[temp.y][temp.x] = "HX-";
+      map[temp.y][temp.x] = "DX0";
     }
     else i--;
   }
@@ -145,7 +145,8 @@ void generateNumbers(MSMap& map){
       coord.y = i;
 
       if(map[i][j] == "HV-"){
-        mines = getMinesAround(map,coord);
+        mines = 1;
+ //       mines = getMinesAround(map,coord);
         if(mines) { map[i][j] = "DN"; map[i][j] += mines+48;} 
       }
     }
@@ -157,14 +158,14 @@ int getMinesAround(MSMap& map ,Coord coord){
   int count=0;
 
   for(int i=-1;i<=1;i++){
-    for(int j=-1;i<=1;j++) {
+    for(int j=-1;j<=1;j++) {
       if(!i && !j) continue;
 
       Coord temp;
       temp.y = coord.y + i;
       temp.x = coord.x + j;
 
-      around.push_back(temp);
+      if(temp.x >= 0 && temp.y >= 0) around.push_back(temp);
     }
   }
 
