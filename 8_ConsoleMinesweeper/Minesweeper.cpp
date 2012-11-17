@@ -18,7 +18,13 @@ typedef struct {
   int mines;
 } MSGame;
 
-typedef vector<string> MSRow;
+typedef struct {
+  char status;
+  char type;
+  int attribute;
+} MSTag;
+
+typedef vector<MSTag> MSRow;
 
 typedef vector<MSRow> MSMap;
 
@@ -30,8 +36,9 @@ typedef struct {
 //--------------------
 
 int startGame(MSGame);
-void printMap(MSMap&);
-inline void printTag(string);
+void printMap(MSMap&,bool all=0);
+inline void printTag(MSTag);
+inline void printAllTag(MSTag);
 void generateMap(MSMap&,MSGame);
 void generateEmptyMap(MSMap&,MSGame);
 void generateMines(MSMap&,MSGame);
@@ -41,6 +48,10 @@ int getMinesAround(MSMap&,Coord);
 int executeInput(MSMap&,string,MSGame);
 int touchBlock(MSMap&,Coord);
 vector<Coord> getBlocksAround(MSMap&,Coord);
+bool inMapRange(Coord,MSGame);
+inline int markBlock(MSMap&,Coord);
+inline int unmarkBlock(MSMap&,Coord);
+bool checkWin(MSMap&,MSGame);
 
 //--------------------
 
@@ -59,6 +70,8 @@ int main(){
 
   startGame(game);
 
+  cin.ignore(1);
+
   return 0;
 }
 
@@ -70,6 +83,11 @@ int startGame(MSGame game){
   generateMap(map,game);
 
   while(1){
+    if(checkWin(map,game)){
+      cout<<"\n---You Win!---\n";
+      printMap(map,1);
+      break;
+    }
     string input;
 
     printMap(map);
@@ -82,7 +100,7 @@ int startGame(MSGame game){
     }
     else if(result == 2){
       cout<<"\n---Game over!---\n";
-      printMap(map);
+      printMap(map,1);
       break;
     }else if(result == 3){
       break;
@@ -101,67 +119,97 @@ int executeInput(MSMap& map,string input,MSGame game){
 
   if(sin>>first){
     if(first == "q") return 3;
-    else if(first == "p"){
+    else if(first == "p" || first == "m" || first == "r"){
       Coord coord;
       int x=0,y=0;
 
       if(!(sin>>x)) return 4;
       if(!(sin>>y)) return 4;
 
-      cout<<x<<" "<<y<<"\n";
-      if(x >= game.col || y >= game.row) return 4;
-
       coord.x = x;
       coord.y = y;
 
-      int result = touchBlock(map,coord);
+      cout<<x<<" "<<y<<"\n";
+      if(!inMapRange(coord,game)) return 4;
 
-      if(result == 1) return 1;
-      else if(result == 2) return 2;
-      else if(result == 0) return 4;
-    }else if(first == "m"){
-      Coord coord;
+      if(first == "p"){
+        int result = touchBlock(map,coord);
 
-      if(!(sin>>coord.x || sin>>coord.y) || (coord.x >= game.col || coord.y >= game.row)) return 4;
-      //if(markBlock(map,coord) == 1) return 1;
+        if(result == 1) return 1;
+        else if(result == 2) return 2;
+        else if(result == 0) return 4;
+
+      }else if(first == "m"){
+        markBlock(map,coord);
+        return 1;
+      }else if(first == "r"){
+        unmarkBlock(map,coord);
+        return 1;
+      }
     }
   }
 
   return 4;
 }
 
+bool inMapRange(Coord coord,MSGame game){
+  if(coord.x >= game.col || coord.y >= game.row) return 0;
+  return 1;
+}
+
+bool checkWin(MSMap& map,MSGame game){
+  int selected = 0;
+
+  for(int y = 0;y<game.row;y++){
+    for(int x = 0;x<game.col;x++){
+      if(map[y][x].status == 'S') selected++;
+    }
+  }
+
+  if(selected == game.mines) return 1;
+  return 0;
+  
+}
+
 int touchBlock(MSMap& map,Coord coord){
-  string &tag = map[coord.y][coord.x];
-  if(tag == "HV-"){
-    tag = "DV-";
+  MSTag &tag = map[coord.y][coord.x];
+  if(tag.status == 'H' && tag.type == 'V'){
+    tag.status = 'D';
 
     vector<Coord> around;
     around = getBlocksAround(map,coord);
 
     for(int i=0;i<around.size();i++){
-      string &stag = map[around[i].y][around[i].x];
-      if(stag == "HV-") {
-        stag = "DV-";
+      MSTag &stag = map[around[i].y][around[i].x];
+      if(stag.status == 'H' && (stag.type == 'V'  || stag.type == 'N')) {
         touchBlock(map,around[i]);
-      }else if(stag.substr(0,2) == "HN") {
-        stag[0] = 'D';
       }
     }
     return 1;
-  }else if(tag.substr(0,2) == "HN"){
-    tag[0] = 'D';
+  }else if(tag.status == 'H' && tag.type == 'N'){
+    tag.status = 'D';
     return 1;
-  }else if(tag == "HX-"){
-    tag = "DX1";
+  }else if(tag.status == 'H' && tag.type == 'X'){
+    tag.status = 'D';
+    tag.attribute = 1;
     return 2;
   }
   return 0;
 }
 
 int markBlock(MSMap& map,Coord coord){
+  MSTag &tag = map[coord.y][coord.x];
+  tag.status = 'S';
+  return 1;
 }
 
-void printMap(MSMap& map){
+int unmarkBlock(MSMap& map,Coord coord){
+  MSTag &tag = map[coord.y][coord.x];
+  tag.status = 'H';
+  return 1;
+}
+
+void printMap(MSMap& map,bool all){
   cout<<"   ";
   for(int i=0;i<map.size();i++) cout<<i<<" ";
   cout<<"\n   ";
@@ -172,28 +220,45 @@ void printMap(MSMap& map){
     cout<<i<<"| ";
 
     for(int j=0;j<map[i].size();j++){
-      printTag(map[i][j]);
+      if(all) printAllTag(map[i][j]);
+      else printTag(map[i][j]);
     }
 
     cout<<"\n";
   }
 }
 
-void printTag(string tag){
-  if(tag[0] == 'H') { cout<<"# "; return; } 
-  else if(tag[0] == 'S') { cout<<"* "; return; }
-  else if(tag[0] == 'D'){
-    if(tag[1] == 'V') { cout<<"  "; return; }
-    else if(tag[1] == 'X') {
-      if(tag[2] == '0') { cout<<"* "; return; } 
-      else if(tag[2] == '1') { cout<<"* "; return; } 
-      else if(tag[2] == '2') { cout<<"& "; return; } 
-    }else if(tag[1] == 'N'){
-      cout<<tag[2]<<" ";
+void printAllTag(MSTag tag){
+  if(tag.status == 'S'){
+    if(tag.type == 'X') { cout<<"* "; return; } 
+    else { cout<<"& "; return; }
+  }else if(tag.type == 'V') { 
+    cout<<"  "; 
+    return; 
+
+  }else if(tag.type == 'X') {
+    if(tag.attribute == 0) { cout<<"* "; return; } 
+    else if(tag.attribute == 1) { cout<<"X "; return; } 
+  }else if(tag.type == 'N'){
+    cout<<tag.attribute<<" ";
+    return;
+  }
+  return;
+}
+
+void printTag(MSTag tag){
+  if(tag.status == 'H') { cout<<"# "; return; } 
+  else if(tag.status == 'S') { cout<<"@ "; return; }
+  else if(tag.status == 'D'){
+    if(tag.type == 'V') { cout<<"  "; return; }
+    else if(tag.type == 'X') {
+      if(tag.attribute == 0) { cout<<"* "; return; } 
+      else if(tag.attribute == 1) { cout<<"* "; return; } 
+      else if(tag.attribute == 2) { cout<<"& "; return; } 
+    }else if(tag.type == 'N'){
+      cout<<tag.attribute<<" ";
       return;
     }
-  }else{
-    cout<<"X "<<tag;
   }
   return;
 }
@@ -207,10 +272,14 @@ void generateMap(MSMap& map,MSGame game){
 
 void generateEmptyMap(MSMap& map,MSGame game){
   MSRow row;
+  MSTag tag;
+  tag.status = 'H';
+  tag.type = 'V';
+  tag.attribute = 0;
 
   for(int i=0;i<game.row;i++){
     for(int j=0;j<game.col;j++){
-      row.push_back("HV-");
+      row.push_back(tag);
     }
 
     map.push_back(row);
@@ -222,6 +291,12 @@ void generateEmptyMap(MSMap& map,MSGame game){
 void generateMines(MSMap& map,MSGame game){
   vector<Coord> minePosition(game.mines);
   Coord temp;
+  MSTag tag;
+
+  tag.status = 'H';
+  //tag.status = 'D';
+  tag.type = 'X';
+  tag.attribute = 0;
 
   for(int i=0;i<game.mines;i++){
     temp.x=rand()%game.col;
@@ -229,8 +304,7 @@ void generateMines(MSMap& map,MSGame game){
 
     if(!in_vector(minePosition,temp)){ 
       minePosition.push_back(temp);
-      //map[temp.y][temp.x] = "DX0";
-      map[temp.y][temp.x] = "HX-";
+      map[temp.y][temp.x] = tag;
     }
     else i--;
   }
@@ -244,10 +318,13 @@ void generateNumbers(MSMap& map){
       coord.x = j;
       coord.y = i;
 
-      if(map[i][j] == "HV-"){
+      if(map[i][j].status == 'H' && map[i][j].type == 'V'){
         mines = getMinesAround(map,coord);
-        //if(mines) { map[i][j] = "DN"; map[i][j] += mines+48;} 
-        if(mines) { map[i][j] = "HN"; map[i][j] += mines+48;} 
+        if(mines) { 
+          map[i][j].type = 'N';
+          map[i][j].status = 'H';
+          map[i][j].attribute += mines;
+        } 
       }
     }
   }
@@ -261,8 +338,7 @@ int getMinesAround(MSMap& map ,Coord coord){
 
   for(int i=0;i<around.size();i++){
     int x = around[i].x,y = around[i].y;
-    if(map[y][x] == "HX-") count++;
-    //if(map[y][x] == "DX0") count++;
+    if(map[y][x].type == 'X') count++;
   }
 
   return count;
