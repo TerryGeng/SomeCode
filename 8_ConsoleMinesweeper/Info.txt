@@ -1,0 +1,43 @@
+Command explanation
+---------------------
+
+p x y - Press the block on coordinate (x,y) in the map.
+
+m x y - Mark the block as a mine on coordinate (x,y) in the map.
+
+r x y - Unmark the block on coordinate (x,y) in the map.
+
+q - Quit.
+
+
+The meaning of each MSTag
+---------------------
+status type attribute
+
+"H   V   0"
+
+Hidden element
+
+"HV0" - void
+
+"HX0" - mine
+
+"HN1" - number
+
+Displayd element
+
+"DV0" - void
+
+"DX0" - mine
+
+"DX1" - boom mine
+
+"DN1" - number 
+
+User select
+
+"SV0" - void
+
+"SX0" - mine
+
+"SH0" - number 
