@@ -22,7 +22,7 @@ int CoordSetToMap(vector<Coord>&,CoordMap&,int,int,double);
 void genEmptyCoordMap(CoordMap&,int,int);
 
 double f(double x){
-  return pow(x,2);
+  return 1/x;
 }
 
 //------------
@@ -31,8 +31,8 @@ int main(){
   vector<Coord> coordSet;
   CoordMap map;
 
-  coordSet = genCoordSet(f,-10,10,0.5);
-  CoordSetToMap(coordSet,map,40,40,0.2);
+  coordSet = genCoordSet(f,-10,10,0.3);
+  CoordSetToMap(coordSet,map,40,40,0.3);
   printCoordMap(map);
 
   return 0;
@@ -41,7 +41,7 @@ int main(){
 //------------
 void printCoordMap(CoordMap& map){
   cout<<"Graph:\n";
-  for(int i=0;i<map.size();i++){
+  for(int i=map.size()-1;i>=0;i--){
     for(int j=0;j<map[i].size();j++){
       cout<<(map[i][j] ? "*" : " ");
     }
@@ -74,18 +74,18 @@ int CoordSetToMap(vector<Coord>& coordSet,CoordMap& map,int width,int height,dou
     x = coordSet[i].x/unitlen + width/2; 
     y = coordSet[i].y/unitlen + height/2;
 
-    if(x>map.size() || y>map[x].size()) continue;
+    if(y>map.size() || x>map[y].size()) continue;
 
-    map[x][y] = 1;
+    map[y][x] = 1;
   }
 
   return 1;
 }
 
 void genEmptyCoordMap(CoordMap& map,int width,int height){
-  vector<int> column(height,0);
-  for(int i=0;i<width;i++){
-    map.push_back(column);
+  vector<int> row(width,0);
+  for(int i=0;i<height;i++){
+    map.push_back(row);
   }
 }
 
