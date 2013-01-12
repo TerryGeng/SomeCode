@@ -37,7 +37,7 @@ typedef struct {
 
 int startGame(MSGame);
 void printMap(MSMap&,bool all=0);
-inline void printTag(MSTag);
+void printTag(MSTag);
 inline void printAllTag(MSTag);
 void generateMap(MSMap&,MSGame);
 void generateEmptyMap(MSMap&,MSGame);
@@ -49,8 +49,8 @@ int executeInput(MSMap&,string,MSGame);
 int touchBlock(MSMap&,Coord);
 vector<Coord> getBlocksAround(MSMap&,Coord);
 bool inMapRange(Coord,MSGame);
-inline int markBlock(MSMap&,Coord);
-inline int unmarkBlock(MSMap&,Coord);
+int markBlock(MSMap&,Coord);
+int unmarkBlock(MSMap&,Coord);
 bool checkWin(MSMap&,MSGame);
 
 //--------------------
