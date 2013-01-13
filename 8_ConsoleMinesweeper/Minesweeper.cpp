@@ -162,7 +162,11 @@ bool checkWin(MSMap& map,MSGame game){
 
   for(int y = 0;y<game.row;y++){
     for(int x = 0;x<game.col;x++){
-      if(map[y][x].status == 'S') selected++;
+      if(map[y][x].status == 'S'){
+        if(map[y][x].type == 'X')
+          selected++;
+        else return 0;
+      }
     }
   }
 
