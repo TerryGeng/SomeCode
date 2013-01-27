@@ -60,13 +60,16 @@ int main(){
 
   srand(time(NULL));
 
-  cout<<"Welcome to Minesweeper!\n\n"
+  cout<<"\033[2J";
+
+  cout<<"\033[32mWelcome to Minesweeper\033[0m\n\n"
     <<"Set map width:\n";
   cin>>game.col;
   cout<<"Set map height:\n";
   cin>>game.row;
   cout<<"Set mine numbers:\n";
   cin>>game.mines;
+
 
   startGame(game);
 
@@ -79,6 +82,7 @@ int startGame(MSGame game){
   MSMap map;
 
   cout<<"GameStart!\n";
+  cin.ignore(1);
 
   generateMap(map,game);
 
@@ -129,7 +133,6 @@ int executeInput(MSMap& map,string input,MSGame game){
       coord.x = x;
       coord.y = y;
 
-      cout<<x<<" "<<y<<"\n";
       if(!inMapRange(coord,game)) return 4;
 
       if(first == "p"){
@@ -214,14 +217,14 @@ int unmarkBlock(MSMap& map,Coord coord){
 }
 
 void printMap(MSMap& map,bool all){
-  cout<<"   ";
+  cout<<"\033[32m   ";
   for(int i=0;i<map.size();i++) cout<<i<<" ";
   cout<<"\n   ";
   for(int i=0;i<map.size();i++) cout<<"--";
-  cout<<"\n";
+  cout<<"\033[0m\n";
 
   for(int i=0;i<map.size();i++){
-    cout<<i<<"| ";
+    cout<<"\033[32m"<<i<<"| \033[0m";
 
     for(int j=0;j<map[i].size();j++){
       if(all) printAllTag(map[i][j]);
