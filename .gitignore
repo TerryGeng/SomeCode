@@ -13,3 +13,9 @@
 
 # Backup files
 *~
+
+cscope.files
+cscope.out
+tags
+
+*.exe
