@@ -48,8 +48,8 @@ int main(int argc,char *argv[]){
     PrintNextChar(ch,Marks);
     getyx(stdscr,y,x);
 
-    if(y == (row - 2) && x == (col-1)){
-      mvprintw(row-1,0," < Press Any Key >");
+    if(y == (row - 1)){
+      mvprintw(row-1,0,"< Press Any Key >");
       refresh();
       getch();
       clear();
