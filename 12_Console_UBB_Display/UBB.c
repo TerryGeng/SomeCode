@@ -1,8 +1,9 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<ncurses.h>
 #include<string.h>
 
-#define MARKS_AMOUNT 2;
+#define MARKS_AMOUNT 2
 
 typedef void AttrApply();
 
@@ -13,7 +14,10 @@ typedef struct {
 
 void PrintNextChar(char ch,UBBMark Marks[]);
 int LookForMarks(char ch[],UBBMark Marks[]);
-int LoadUbbMarks(UBBMark Marks[]);
+void LoadUbbMarks(UBBMark Marks[]);
+
+void BMarkBg();
+void BMarkEd();
 
 /* ---------------- */
 
@@ -22,11 +26,13 @@ int main(int argc,char *argv[]){
   FILE *fp;
   
   if(argc != 2){
-    printf("Simple UBB Parser \n Usage: %s <UBB file name>\n",argv[0]);
+    printf(" A Simple UBB Parser \n Usage: %s <UBB file name>\n",argv[0]);
+    exit(1);
   }
 
   if((fp = fopen(argv[1],"r")) == NULL){
     perror("FAIL: Cannot open the file.\n");
+    exit(1);
   }
 
   initscr();
@@ -59,10 +65,10 @@ int main(int argc,char *argv[]){
 
 void PrintNextChar(char ch,UBBMark Marks[]){
   static char buffer[20];
-  static unsigned int BufLen = 0;
+  static unsigned int bufLen = 0;
 
-  buffer[BufLen] = ch;
-  buffer[++buffer] = '\0';
+  buffer[bufLen] = ch;
+  buffer[++bufLen] = '\0';
   short result = LookForMarks(buffer,Marks);
   switch(result){
     case -1:{
@@ -87,11 +93,12 @@ void PrintNextChar(char ch,UBBMark Marks[]){
 }
 
 int LookForMarks(char ch[],UBBMark Marks[]){
-  for(int i = 0;i<MARKS_AMOUNT-1;++i){
-    int MarkLen = strlen(Mark[i].Mark);
+  int i;
+  for(i = 0;i<MARKS_AMOUNT-1;++i){
+    int MarkLen = strlen(Marks[i].mark);
     int chLen = strlen(ch);
 
-    if(strcmp(Marks[i].Mark,ch,chLen) == 0){
+    if(strncmp(Marks[i].mark,ch,chLen) == 0){
       if(MarkLen == chLen){
         return i; /* Found one, return the Mark's offset. */
       }else if(MarkLen > chLen){
@@ -103,9 +110,9 @@ int LookForMarks(char ch[],UBBMark Marks[]){
   return -1; /* Didn't find. */
 }
 
-void LoadUbbMarks(UBBMark Mark[]){
-  Marks[0].Mark = "[b]";
-  Marks[1].Mark = "[/b]";
+void LoadUbbMarks(UBBMark Marks[]){
+  strcpy(Marks[0].mark,"[b]");
+  strcpy(Marks[1].mark,"[/b]");
   Marks[0].Call = &BMarkBg;
   Marks[1].Call = &BMarkEd;
 }
