@@ -12,8 +12,8 @@ Compile it with `-lncurses` . Like:
 
 Then, use
 
-    > ./UBB _<yourfile>_
+    > ./UBB <yourfile>
 
-_<yourfile>_ is your file that contains UBB code. Like
+ _\<yourfile\>_ is your file that contains UBB code. Like
 
     > ./UBB Test.txt
