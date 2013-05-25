@@ -48,8 +48,8 @@ int main(int argc,char *argv[]){
     PrintNextChar(ch,Marks);
     getyx(stdscr,y,x);
 
-    if(y = row - 1){
-      mvprintw(row,0,"< Press Any Key >");
+    if(y == (row - 2) && x == (col-1)){
+      mvprintw(row-1,0," < Press Any Key >");
       refresh();
       getch();
       clear();
@@ -58,8 +58,14 @@ int main(int argc,char *argv[]){
 
   }
 
-  mvprintw(row,0,"< -- EOF -- >");
+  fclose(fp);
+  mvprintw(row-1,0,"< -- EOF -- >");
   refresh();
+  getch();
+
+  endwin();
+
+  return 0;
 
 }
 
@@ -94,7 +100,7 @@ void PrintNextChar(char ch,UBBMark Marks[]){
 
 int LookForMarks(char ch[],UBBMark Marks[]){
   int i;
-  for(i = 0;i<MARKS_AMOUNT-1;++i){
+  for(i = 0;i<MARKS_AMOUNT;++i){
     int MarkLen = strlen(Marks[i].mark);
     int chLen = strlen(ch);
 
