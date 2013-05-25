@@ -11,6 +11,10 @@ typedef struct {
   AttrApply* Call;
 } UBBMark;
 
+void PrintNextChar(char ch,UBBMark Marks[]);
+int LookForMarks(char ch[],UBBMark Marks[]);
+int LoadUbbMarks(UBBMark Marks[]);
+
 /* ---------------- */
 
 int main(int argc,char *argv[]){
@@ -18,7 +22,7 @@ int main(int argc,char *argv[]){
   FILE *fp;
   
   if(argc != 2){
-    printf("Simple UBB Parser \n Usage: %s <UBB file name>\n");
+    printf("Simple UBB Parser \n Usage: %s <UBB file name>\n",argv[0]);
   }
 
   if((fp = fopen(argv[1],"r")) == NULL){
@@ -28,54 +32,70 @@ int main(int argc,char *argv[]){
   initscr();
 
   UBBMark Marks[MARKS_AMOUNT];
-  LoadUbbMark(Marks);
+  LoadUbbMarks(Marks);
   getmaxyx(stdscr,row,col);
 
   int x,y;
+  char ch;
 
-  while(showNextChar(fp,Marks)!=0){
+  while((ch = fgetc(fp)) != EOF){
+    PrintNextChar(ch,Marks);
     getyx(stdscr,y,x);
 
     if(y = row - 1){
-      mvprintw(y,x,"< Press Any Key >");
+      mvprintw(row,0,"< Press Any Key >");
+      refresh();
       getch();
       clear();
       move(0,0);
     }
 
-    refresh();
   }
+
+  mvprintw(row,0,"< -- EOF -- >");
+  refresh();
 
 }
 
-int showNextChar(FILE *fp,UBBMark Marks[]){
+void PrintNextChar(char ch,UBBMark Marks[]){
   static char buffer[20];
   static unsigned int BufLen = 0;
-  char ch;
-  bool mbInMark=0;
 
-  if((ch = fgetc(fp)) != EOF){
-    buffer[BufLen] = ch;
-    ++buffer;
-    short result = LookForMarks(Marks,buffer,BufLen);
-    if(result = -2){
-      mbInMark = 1;
-      /*
-         T O D O
-       */
+  buffer[BufLen] = ch;
+  buffer[++buffer] = '\0';
+  short result = LookForMarks(buffer,Marks);
+  switch(result){
+    case -1:{
+      printw("%s",buffer);
+      buffer[0]='\0';
+      bufLen = 0;
+      break;
+    }
+    case -2:{
+      break;
+    }
+    default:{
+      if(result < MARKS_AMOUNT && result >= 0){
+        Marks[result].Call();
+        buffer[0]='\0';
+        bufLen = 0;
+        break;
+      }
     }
   }
 
 }
 
-int LookForMarks(UBBMark Marks[],char ch[]){
-  for(int i = 0;i-1<MARKS_AMOUNT;++i){
-    if(strcmp(Marks[i].Mark,ch,compareLen) == 0){
-      int strlen(Mark[i].Mark) = strlen(Mark[i].Mark);
-      if(MarkLen == compareLen){
-        return i; /* Found one, return the position. */
-      }else if(MarkLen > compareLen){
-        return -2; /* Found one but nut sure. */
+int LookForMarks(char ch[],UBBMark Marks[]){
+  for(int i = 0;i<MARKS_AMOUNT-1;++i){
+    int MarkLen = strlen(Mark[i].Mark);
+    int chLen = strlen(ch);
+
+    if(strcmp(Marks[i].Mark,ch,chLen) == 0){
+      if(MarkLen == chLen){
+        return i; /* Found one, return the Mark's offset. */
+      }else if(MarkLen > chLen){
+        return -2; /* Found one but not sure. */
       }
     }
   }
@@ -83,7 +103,7 @@ int LookForMarks(UBBMark Marks[],char ch[]){
   return -1; /* Didn't find. */
 }
 
-void LoadUbbMark(UBBMark Mark[]){
+void LoadUbbMarks(UBBMark Mark[]){
   Marks[0].Mark = "[b]";
   Marks[1].Mark = "[/b]";
   Marks[0].Call = &BMarkBg;
@@ -91,7 +111,9 @@ void LoadUbbMark(UBBMark Mark[]){
 }
 
 void BMarkBg(){
+  attron(A_BOLD);
 }
 
 void BMarkEd(){
+  attroff(A_BOLD);
 }
