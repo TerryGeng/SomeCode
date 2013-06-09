@@ -3,7 +3,7 @@
 #include<ncurses.h>
 #include<string.h>
 
-#define MARKS_AMOUNT 2
+#define MARKS_AMOUNT 4
 
 typedef void AttrApply();
 

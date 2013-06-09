@@ -1,52 +1,8 @@
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
-This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
+2013.5.25
 
+This is a simple [b]UBB parser[/b] in [b]the terminal[/b].
 It supports [b]BOLD[/b] style.
+
+2013.6.9
+
+Now it supports [u]Underline style[/u].
