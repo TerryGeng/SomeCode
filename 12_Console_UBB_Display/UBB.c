@@ -3,7 +3,7 @@
 #include<ncurses.h>
 #include<string.h>
 
-#define MARKS_AMOUNT 4
+#define MARKS_AMOUNT 6
 
 typedef void AttrApply();
 
@@ -20,6 +20,8 @@ void BMarkBg();
 void BMarkEd();
 void UMarkBg();
 void UMarkEd();
+void HLMarkBg();
+void HLMarkEd();
 
 /* ---------------- */
 
@@ -130,6 +132,12 @@ void LoadUbbMarks(UBBMark Marks[]){
   strcpy(Marks[3].mark,"[/u]");
   Marks[2].Call = &UMarkBg;
   Marks[3].Call = &UMarkEd;
+  
+  /* Import [hl] Marks */
+  strcpy(Marks[4].mark,"[hl]");
+  strcpy(Marks[5].mark,"[/hl]");
+  Marks[4].Call = &HLMarkBg;
+  Marks[5].Call = &HLMarkEd;
 }
 
 void BMarkBg(){
@@ -146,4 +154,12 @@ void UMarkBg(){
 
 void UMarkEd(){
   attroff(A_UNDERLINE);
+}
+
+void HLMarkBg(){
+  attron(A_STANDOUT);
+}
+
+void HLMarkEd(){
+  attroff(A_STANDOUT);
 }

@@ -6,3 +6,4 @@ It supports [b]BOLD[/b] style.
 2013.6.9
 
 Now it supports [u]Underline style[/u].
+And new [hl]Highlight style[/hl].
