@@ -18,6 +18,8 @@ void LoadUbbMarks(UBBMark Marks[]);
 
 void BMarkBg();
 void BMarkEd();
+void UMarkBg();
+void UMarkEd();
 
 /* ---------------- */
 
@@ -26,7 +28,7 @@ int main(int argc,char *argv[]){
   FILE *fp;
   
   if(argc != 2){
-    printf(" A Simple UBB Parser \n Usage: %s <UBB file name>\n",argv[0]);
+    printf("A Simple UBB Parser \n\nUsage: %s <UBB file name>\n",argv[0]);
     exit(1);
   }
 
@@ -117,10 +119,17 @@ int LookForMarks(char ch[],UBBMark Marks[]){
 }
 
 void LoadUbbMarks(UBBMark Marks[]){
+  /* Import [b] Marks */
   strcpy(Marks[0].mark,"[b]");
   strcpy(Marks[1].mark,"[/b]");
   Marks[0].Call = &BMarkBg;
   Marks[1].Call = &BMarkEd;
+
+  /* Import [u] Marks */
+  strcpy(Marks[2].mark,"[u]");
+  strcpy(Marks[3].mark,"[/u]");
+  Marks[2].Call = &UMarkBg;
+  Marks[3].Call = &UMarkEd;
 }
 
 void BMarkBg(){
@@ -129,4 +138,12 @@ void BMarkBg(){
 
 void BMarkEd(){
   attroff(A_BOLD);
+}
+
+void UMarkBg(){
+  attron(A_UNDERLINE);
+}
+
+void UMarkEd(){
+  attroff(A_UNDERLINE);
 }
